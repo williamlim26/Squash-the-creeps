@@ -18,7 +18,6 @@ public partial class Player : CharacterBody3D
 
     if (Input.IsActionPressed("move_right"))
     {
-      GD.Print("This is a message printed to the Godot output window.");
       direction.X += 1.0f;
     }
     if (Input.IsActionPressed("move_left"))
