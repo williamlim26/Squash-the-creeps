@@ -15,6 +15,11 @@ public partial class Mob : CharacterBody3D
         MoveAndSlide();
     }
 
+    // Emitted when the player jumped on the mob.
+    [Signal]
+    public delegate void SquashedEventHandler();
+
+
     // This function will be called from the main scene
     public void Initialize(Vector3 startPosition, Vector3 playerPosition)
     {
@@ -37,6 +42,12 @@ public partial class Mob : CharacterBody3D
     // We also specified this function name in PascalCase in the editor's connection window.
     private void OnVisibilityNotifierScreenExited()
     {
+        QueueFree();
+    }
+
+    public void Squash()
+    {
+        EmitSignal(SignalName.Squashed);
         QueueFree();
     }
 }

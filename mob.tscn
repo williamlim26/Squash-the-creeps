@@ -6,7 +6,9 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_p11y5"]
 size = Vector3(2, 1, 2.20135)
 
-[node name="Mob" type="CharacterBody3D"]
+[node name="Mob" type="CharacterBody3D" groups=["mob"]]
+collision_layer = 2
+collision_mask = 0
 script = ExtResource("1_nokgg")
 
 [node name="Pivot" type="Node3D" parent="."]
@@ -15,10 +17,12 @@ script = ExtResource("1_nokgg")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00701892, 0.322473, -0.103241)
+visible = false
 shape = SubResource("BoxShape3D_p11y5")
 
 [node name="VisibleOnScreenNotifier3D" type="VisibleOnScreenNotifier3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.302548, 0)
+visible = false
 aabb = AABB(-1.18115, -0.764936, -1.52383, 2.3623, 1.52987, 3.53007)
 
 [connection signal="screen_exited" from="VisibleOnScreenNotifier3D" to="." method="OnVisibilityNotifierScreenExited"]
