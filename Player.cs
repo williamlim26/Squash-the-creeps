@@ -1,29 +1,32 @@
 using Godot;
-using System;
 
 public partial class Player : CharacterBody3D
 {
+    // Emitted when the player was hit by a mob.
+    [Signal]
+    public delegate void HitEventHandler();
+
     // How fast the player moves in meters per second.
     [Export]
     public int Speed { get; set; } = 14;
     // The downward acceleration when in the air, in meters per second squared.
     [Export]
     public int FallAcceleration { get; set; } = 75;
-
-    private Vector3 _targetVelocity = Vector3.Zero;
-
+    // Vertical impulse applied to the character upon jumping in meters per second.
+    [Export]
+    public int JumpImpulse { get; set; } = 20;
     // Vertical impulse applied to the character upon bouncing over a mob in meters per second.
     [Export]
     public int BounceImpulse { get; set; } = 16;
 
-    // Emitted when the player was hit by a mob.
-    [Signal]
-    public delegate void HitEventHandler();
+    private Vector3 _targetVelocity = Vector3.Zero;
 
     public override void _PhysicsProcess(double delta)
     {
+        // We create a local variable to store the input direction.
         var direction = Vector3.Zero;
 
+        // We check for each move input and update the direction accordingly.
         if (Input.IsActionPressed("move_right"))
         {
             direction.X += 1.0f;
@@ -34,6 +37,8 @@ public partial class Player : CharacterBody3D
         }
         if (Input.IsActionPressed("move_back"))
         {
+            // Notice how we are working with the vector's X and Z axes.
+            // In 3D, the XZ plane is the ground plane.
             direction.Z += 1.0f;
         }
         if (Input.IsActionPressed("move_forward"))
@@ -41,6 +46,7 @@ public partial class Player : CharacterBody3D
             direction.Z -= 1.0f;
         }
 
+        // Prevent diagonal moving fast af
         if (direction != Vector3.Zero)
         {
             direction = direction.Normalized();
@@ -48,19 +54,15 @@ public partial class Player : CharacterBody3D
             GetNode<Node3D>("Pivot").Basis = Basis.LookingAt(direction);
         }
 
-        // Ground velocity
+        // Ground Velocity
         _targetVelocity.X = direction.X * Speed;
         _targetVelocity.Z = direction.Z * Speed;
 
-        // Vertical velocity
+        // Vertical Velocity
         if (!IsOnFloor()) // If in the air, fall towards the floor. Literally gravity
         {
             _targetVelocity.Y -= FallAcceleration * (float)delta;
         }
-
-        // Moving the character
-        Velocity = _targetVelocity;
-        MoveAndSlide();
 
         // Jumping.
         if (IsOnFloor() && Input.IsActionJustPressed("jump"))
@@ -68,15 +70,13 @@ public partial class Player : CharacterBody3D
             _targetVelocity.Y = JumpImpulse;
         }
 
-        // Iterate through all collisions that occured this frame
+        // Iterate through all collisions that occurred this frame.
         for (int index = 0; index < GetSlideCollisionCount(); index++)
         {
-            // We got one of the collisions with the player
+            // We get one of the collisions with the player.
             KinematicCollision3D collision = GetSlideCollision(index);
 
             // If the collision is with a mob.
-            // With C# we leverage typing and pattern-matching
-            // instead of checking for the group we created.
             if (collision.GetCollider() is Mob mob)
             {
                 // We check that we are hitting it from above.
@@ -90,11 +90,11 @@ public partial class Player : CharacterBody3D
                 }
             }
         }
-    }
 
-    // Vertical impulse applied to the character upon jumping in meters per second.
-    [Export]
-    public int JumpImpulse { get; set; } = 20;
+        // Moving the Character
+        Velocity = _targetVelocity;
+        MoveAndSlide();
+    }
 
     private void Die()
     {
@@ -102,15 +102,8 @@ public partial class Player : CharacterBody3D
         QueueFree();
     }
 
-    // We also specified this function name in PascalCase in the editor's connection window.
     private void OnMobDetectorBodyEntered(Node3D body)
     {
         Die();
-    }
-
-    // We also specified this function name in PascalCase in the editor's connection window.
-    private void OnPlayerHit()
-    {
-        GetNode<Timer>("MobTimer").Stop();
     }
 }
