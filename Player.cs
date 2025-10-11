@@ -52,6 +52,11 @@ public partial class Player : CharacterBody3D
             direction = direction.Normalized();
             // Setting the basis property will affect the rotation of the node.
             GetNode<Node3D>("Pivot").Basis = Basis.LookingAt(direction);
+            GetNode<AnimationPlayer>("AnimationPlayer").SpeedScale = 4;
+        }
+        else
+        {
+            GetNode<AnimationPlayer>("AnimationPlayer").SpeedScale = 1;
         }
 
         // Ground Velocity
@@ -94,6 +99,10 @@ public partial class Player : CharacterBody3D
         // Moving the Character
         Velocity = _targetVelocity;
         MoveAndSlide();
+
+        var pivot = GetNode<Node3D>("Pivot");
+        pivot.Rotation = new Vector3(Mathf.Pi / 6.0f * Velocity.Y / JumpImpulse, pivot.Rotation.Y, pivot.Rotation.Z);
+
     }
 
     private void Die()

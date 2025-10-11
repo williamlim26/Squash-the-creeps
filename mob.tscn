@@ -1,10 +1,44 @@
-[gd_scene load_steps=4 format=3 uid="uid://r004jafjwvlo"]
+[gd_scene load_steps=6 format=3 uid="uid://r004jafjwvlo"]
 
 [ext_resource type="Script" uid="uid://bs8t85j8d2bob" path="res://Mob.cs" id="1_nokgg"]
 [ext_resource type="PackedScene" uid="uid://bicorb7we351t" path="res://art/mob.glb" id="2_ubaqv"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_p11y5"]
 size = Vector3(2, 1, 2.20135)
+
+[sub_resource type="Animation" id="Animation_nokgg"]
+resource_name = "float"
+length = 1.2
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Pivot/Character:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.3, 0.7, 1.2),
+"transitions": PackedFloat32Array(0.420449, 2.07053, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0, 0.65, 0), Vector3(0, 0.24375, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Pivot/Character:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.1, 0.5, 1.2),
+"transitions": PackedFloat32Array(0.420449, 0.420448, 1),
+"update": 0,
+"values": [Vector3(0, 0, 0), Vector3(0.139626, 0, 0), Vector3(0.0174533, 0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ubaqv"]
+_data = {
+&"float": SubResource("Animation_nokgg")
+}
 
 [node name="Mob" type="CharacterBody3D" groups=["mob"]]
 collision_layer = 2
@@ -14,6 +48,7 @@ script = ExtResource("1_nokgg")
 [node name="Pivot" type="Node3D" parent="."]
 
 [node name="Character" parent="Pivot" instance=ExtResource("2_ubaqv")]
+transform = Transform3D(1, 0, 0, 0, 0.990379, -0.13838, 0, 0.13838, 0.990379, 0, 0.446098, 0)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.00701892, 0.322473, -0.103241)
@@ -24,5 +59,11 @@ shape = SubResource("BoxShape3D_p11y5")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.302548, 0)
 visible = false
 aabb = AABB(-1.18115, -0.764936, -1.52383, 2.3623, 1.52987, 3.53007)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_ubaqv")
+}
+autoplay = "float"
 
 [connection signal="screen_exited" from="VisibleOnScreenNotifier3D" to="." method="OnVisibilityNotifierScreenExited"]
