@@ -7,8 +7,8 @@
 radius = 0.8
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_onrkg"]
-height = 0.828003
-radius = 1.26172
+height = 0.658142
+radius = 1.0376
 
 [node name="Player" type="CharacterBody3D"]
 collision_mask = 6
@@ -26,14 +26,12 @@ debug_color = Color(0.322319, 0.488602, 1, 0.984314)
 debug_fill = false
 
 [node name="MobDetector" type="Area3D" parent="."]
-visible = false
 collision_layer = 0
 collision_mask = 2
 monitorable = false
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="MobDetector"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.397766, 0.00811958)
-visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.482697, 0.00811958)
 shape = SubResource("CylinderShape3D_onrkg")
 
 [connection signal="Hit" from="." to="." method="OnPlayerHit"]
